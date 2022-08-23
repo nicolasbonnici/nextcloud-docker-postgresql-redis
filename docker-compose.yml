@@ -1,14 +1,15 @@
 version: "3.8"
 services:
   nextcloud-db:
-    image: mariadb:latest
-    container_name: nextcloud-db
     hostname: nextcloud-db
-    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
-    restart: unless-stopped
-    env_file: .env
-    volumes:
-      - ./nextcloud-data-db:/var/lib/mysql
+    container_name: nextcloud-db
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_PASSWORD: ${DATABASE_PWD}
+    ports:
+      - "15442:5442"
 
   nextcloud-redis:
     image: redis:latest
@@ -41,8 +42,8 @@ services:
     depends_on:
       - nextcloud-app
     volumes:
-      - ./nextcloud-data/:/var/www/html:ro
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nextcloud-data/:/var/www/html
+      - ./nginx:/etc/nginx/
     ports:
       - 8888:80
 
