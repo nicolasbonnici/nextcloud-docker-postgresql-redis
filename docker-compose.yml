@@ -32,6 +32,9 @@ services:
       - nextcloud-redis
     volumes:
       - ./nextcloud-data/:/var/www/html
+      # Uncomment and specify your data directory (if you have a mounted hard drive)
+      # !! ALWAYS make a backup of your data before such manipulations !!
+      # - /path/to/data/directory:/var/www/html/data
 
   nextcloud-web:
     image: nginx:latest
