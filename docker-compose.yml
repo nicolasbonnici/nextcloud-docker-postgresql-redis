@@ -37,7 +37,7 @@ services:
       # - /path/to/data/directory:/var/www/html/data
 
   nextcloud-web:
-    image: nginx:latest
+    image: nginx:alpine
     container_name: nextcloud-web
     hostname: nextcloud-web
     restart: unless-stopped
@@ -46,7 +46,7 @@ services:
       - nextcloud-app
     volumes:
       - ./nextcloud-data/:/var/www/html
-      - ./nginx:/etc/nginx/
+      - ./nginx/:/etc/nginx/
     ports:
       - 8888:80
 
