@@ -9,11 +9,14 @@ services:
       POSTGRES_DB: ${DATABASE_NAME}
       POSTGRES_PASSWORD: ${DATABASE_PWD}
     ports:
-      - "15442:5442"
+      - "16442:5442"
 
   nextcloud-redis:
-    image: redis:latest
     container_name: nextcloud-redis
+    image: "redis:alpine"
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    ports:
+      - "6378:6379"
     env_file: .env
     hostname: nextcloud-redis
     restart: unless-stopped
@@ -29,9 +32,6 @@ services:
       - nextcloud-redis
     volumes:
       - ./nextcloud-data/:/var/www/html
-      # Uncomment and specify your data directory (if you have a mounted hard drive)
-      # !! ALWAYS make a backup of your data before such manipulations !!
-      # - /path/to/data/directory:/var/www/html/data
 
   nextcloud-web:
     image: nginx:latest
