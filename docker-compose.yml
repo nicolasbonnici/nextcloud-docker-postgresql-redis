@@ -46,7 +46,7 @@ services:
       - nextcloud-app
     volumes:
       - ./nextcloud-data/:/var/www/html
-      - ./nginx/:/etc/nginx/
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - 8888:80
 
