@@ -1,4 +1,4 @@
 # nextcloud-docker
 
-Currently in dev come back later
+Work in progress
 
