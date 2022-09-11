@@ -9,16 +9,18 @@ services:
       POSTGRES_PASSWORD: ${DATABASE_PWD}
     volumes:
       - db:/var/lib/postgresql/data
+    ports:
+      - "15432:5432"
 
   redis:
     image: redis:alpine
     restart: always
 
   app:
-    image: nextcloud:fpm-alpine
+    build: ./
     restart: always
     volumes:
-      - nextcloud:/var/www/html
+      - nextcloud:/usr/src/nextcloud
     environment:
       - POSTGRES_HOST=db
       - POSTGRES_DB=${DATABASE_NAME}
@@ -39,36 +41,34 @@ services:
       - db
       - redis
 
-  web:
-    build: ./web
+  nc-web:
+    container_name: nginx
+    build:
+      context: ./nginx
     restart: always
-    volumes:
-      - nextcloud:/var/www/html:ro
     environment:
-      - VIRTUAL_HOST=localhost
+      - VIRTUAL_HOST=cloud.example.localhost
       - LETSENCRYPT_HOST=letsencrypt-companion
       - LETSENCRYPT_EMAIL=foo@bar.com
+    labels:
+      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+    volumes:
+      - nextcloud:/var/www/html
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/sites/:/etc/nginx/sites-available
+      - ./nginx/conf.d/:/etc/nginx/conf.d
+      - ./nginx/logs:/var/log/nginx
+      - certs:/etc/nginx/certs:ro
+      - vhost.d:/etc/nginx/vhost.d
+      - /var/run/docker.sock:/tmp/docker.sock:ro
     depends_on:
       - app
     networks:
       - proxy-tier
       - default
-
-  proxy:
-    build: ./proxy
-    restart: always
     ports:
-      - 80:80
-      - 443:443
-    labels:
-      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
-    volumes:
-      - certs:/etc/nginx/certs:ro
-      - vhost.d:/etc/nginx/vhost.d
-      - html:/usr/share/nginx/html
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-    networks:
-      - proxy-tier
+      - "8080:80"
+      - "443:443"
 
   letsencrypt-companion:
     image: nginxproxy/acme-companion
@@ -82,7 +82,7 @@ services:
     networks:
       - proxy-tier
     depends_on:
-      - proxy
+      - nc-web
 
 volumes:
   db:
