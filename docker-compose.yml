@@ -3,7 +3,7 @@ version: '3'
 services:
   db:
     hostname: nc_db
-    image: postgres:13
+    image: postgres:14
     restart: always
     environment:
       POSTGRES_DB: ${DATABASE_NAME}
