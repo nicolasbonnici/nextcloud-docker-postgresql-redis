@@ -2,6 +2,7 @@ version: '3'
 
 services:
   db:
+    hostname: nc_db
     image: postgres:13
     restart: always
     environment:
@@ -18,11 +19,10 @@ services:
 
   app:
     build: ./
-    restart: always
     volumes:
       - nextcloud:/usr/src/nextcloud
     environment:
-      - POSTGRES_HOST=db
+      - POSTGRES_HOST=${DATABASE_HOST}
       - POSTGRES_DB=${DATABASE_NAME}
       - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PWD}
@@ -45,7 +45,6 @@ services:
     container_name: nginx
     build:
       context: ./nginx
-    restart: always
     environment:
       - VIRTUAL_HOST=cloud.example.localhost
       - LETSENCRYPT_HOST=letsencrypt-companion
@@ -55,11 +54,10 @@ services:
     volumes:
       - nextcloud:/var/www/html
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/sites/:/etc/nginx/sites-available
       - ./nginx/conf.d/:/etc/nginx/conf.d
+      - ./nginx/sites/:/etc/nginx/sites-available
       - ./nginx/logs:/var/log/nginx
-      - certs:/etc/nginx/certs:ro
-      - vhost.d:/etc/nginx/vhost.d
+      - ./nginx/certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
     depends_on:
       - app
@@ -67,14 +65,13 @@ services:
       - proxy-tier
       - default
     ports:
-      - "8080:80"
+      - "8888:80"
       - "443:443"
 
   letsencrypt-companion:
     image: nginxproxy/acme-companion
-    restart: always
     volumes:
-      - certs:/etc/nginx/certs
+      - ./nginx/certs:/etc/nginx/certs
       - acme:/etc/acme.sh
       - vhost.d:/etc/nginx/vhost.d
       - html:/usr/share/nginx/html
