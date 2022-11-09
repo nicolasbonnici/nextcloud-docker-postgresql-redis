@@ -26,7 +26,7 @@ services:
       - POSTGRES_DB=${DATABASE_NAME}
       - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PWD}
-      - REDIS_HOST=redis
+      - REDIS_HOST=${REDIS_HOST}
     depends_on:
       - db
       - redis
@@ -42,13 +42,13 @@ services:
       - redis
 
   nc-web:
-    container_name: nginx
+    container_name: nc-web
     build:
       context: ./nginx
     environment:
-      - VIRTUAL_HOST=cloud.example.localhost
-      - LETSENCRYPT_HOST=letsencrypt-companion
-      - LETSENCRYPT_EMAIL=foo@bar.com
+      - VIRTUAL_HOST=${CLOUD_HOST}
+      - LETSENCRYPT_HOST=${CLOUD_HOST}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     labels:
       com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
     volumes:
