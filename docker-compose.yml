@@ -2,6 +2,7 @@ version: '3'
 
 services:
   db:
+    container_name: nc-db
     hostname: nc_db
     image: postgres:14
     restart: always
@@ -18,6 +19,7 @@ services:
     restart: always
 
   app:
+    container_name: nc-app
     build: ./
     volumes:
       - nextcloud:/usr/src/nextcloud
@@ -33,6 +35,7 @@ services:
       - redis
 
   cron:
+    container_name: nc-cron
     image: nextcloud:fpm-alpine
     restart: always
     volumes:
@@ -70,6 +73,7 @@ services:
       - "443:443"
 
   letsencrypt-companion:
+    container_name: nc-letsencrypt
     image: nginxproxy/acme-companion
     volumes:
       - ./nginx/certs:/etc/nginx/certs
@@ -77,6 +81,8 @@ services:
       - vhost.d:/etc/nginx/vhost.d
       - html:/usr/share/nginx/html
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - NGINX_PROXY_CONTAINER=nc-web
     networks:
       - proxy-tier
     depends_on:
