@@ -27,6 +27,7 @@ services:
       - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PWD}
       - REDIS_HOST=${REDIS_HOST}
+      - DEFAULT_PHONE_REGION=FR
     depends_on:
       - db
       - redis
