@@ -55,7 +55,7 @@ services:
       - LETSENCRYPT_HOST=${CLOUD_HOST}
       - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     labels:
-      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+      com.github.jrcs.letsencrypt_nginx_proxy_companion.docker_gen: "true"
     volumes:
       - nextcloud:/var/www/html
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
