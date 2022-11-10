@@ -77,7 +77,7 @@ RUN set -ex; \
 # set recommended PHP.ini settings
 # see https://docs.nextcloud.com/server/latest/admin_manual/installation/server_tuning.html#enable-php-opcache
 ENV PHP_MEMORY_LIMIT 512M
-ENV PHP_UPLOAD_LIMIT 512M
+ENV PHP_UPLOAD_LIMIT 10G
 RUN { \
         echo 'opcache.enable=1'; \
         echo 'opcache.interned_strings_buffer=16'; \
@@ -100,7 +100,6 @@ RUN { \
     chmod -R g=u /var/www
 
 VOLUME /var/www/html
-
 
 ENV NEXTCLOUD_VERSION 24.0.7
 
