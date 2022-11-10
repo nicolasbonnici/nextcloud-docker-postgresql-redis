@@ -15,6 +15,7 @@ services:
       - "15432:5432"
 
   redis:
+    container_name: nc-redis
     image: redis:alpine
     restart: always
 
