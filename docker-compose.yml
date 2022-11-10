@@ -63,7 +63,6 @@ services:
       - ./nginx/conf.d/:/etc/nginx/conf.d
       - ./nginx/sites/:/etc/nginx/sites-available
       - ./nginx/logs:/var/log/nginx
-      - ./nginx/certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
     depends_on:
       - app
