@@ -53,8 +53,6 @@ services:
     restart: always
     environment:
       - VIRTUAL_HOST=${CLOUD_HOST}
-    labels:
-      com.github.jrcs.letsencrypt_nginx_proxy_companion.docker_gen: "true"
     volumes:
       - ./nginx/conf.d/:/etc/nginx/conf.d
       - ./certbot/conf/:/etc/nginx/ssl/:ro
