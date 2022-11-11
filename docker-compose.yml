@@ -2,6 +2,7 @@ version: '3'
 
 services:
   db:
+    container_name: nc-db
     hostname: nc_db
     image: postgres:14
     restart: always
@@ -14,10 +15,12 @@ services:
       - "15432:5432"
 
   redis:
+    container_name: nc-redis
     image: redis:alpine
     restart: always
 
   app:
+    container_name: nc-app
     build: ./
     volumes:
       - nextcloud:/usr/src/nextcloud
@@ -33,6 +36,7 @@ services:
       - redis
 
   cron:
+    container_name: nc-cron
     image: nextcloud:fpm-alpine
     restart: always
     volumes:
@@ -46,19 +50,17 @@ services:
     container_name: nc-web
     build:
       context: ./nginx
+    restart: always
     environment:
       - VIRTUAL_HOST=${CLOUD_HOST}
-      - LETSENCRYPT_HOST=${CLOUD_HOST}
-      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
-    labels:
-      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
     volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
+      - ./certbot/www:/var/www/certbot/:ro
       - nextcloud:/var/www/html
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/conf.d/:/etc/nginx/conf.d
       - ./nginx/sites/:/etc/nginx/sites-available
       - ./nginx/logs:/var/log/nginx
-      - ./nginx/certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
     depends_on:
       - app
@@ -69,14 +71,12 @@ services:
       - "8888:80"
       - "443:443"
 
-  letsencrypt-companion:
-    image: nginxproxy/acme-companion
+  certbot:
+    container_name: nc-certbot
+    image: certbot/certbot:latest
     volumes:
-      - ./nginx/certs:/etc/nginx/certs
-      - acme:/etc/acme.sh
-      - vhost.d:/etc/nginx/vhost.d
-      - html:/usr/share/nginx/html
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
     networks:
       - proxy-tier
     depends_on:
