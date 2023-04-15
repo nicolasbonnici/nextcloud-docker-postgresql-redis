@@ -4,7 +4,7 @@ All in one Nextcloud Docker build, using NGINX, PostgreSQL and Redis. SSL certif
 
 Current stack versions
 
-- php 8.1 Alpine based (php:8.1-fpm-alpine3.16)
+- php 8.2 Alpine based (php:8.2-fpm-alpine)
 - Nextcloud 26.0.0 
 - PostgreSQL 14
 - Redis (latest Alpine image)
