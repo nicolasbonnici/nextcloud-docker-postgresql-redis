@@ -1,0 +1,3 @@
+2023/11/10 21:00:37 [emerg] 1#1: host not found in upstream "app:9000" in /etc/nginx/sites-available/default.conf:8
+2023/11/10 21:01:42 [emerg] 1#1: host not found in upstream "app:9000" in /etc/nginx/sites-available/default.conf:8
+2023/11/10 21:02:48 [emerg] 1#1: host not found in upstream "app:9000" in /etc/nginx/sites-available/default.conf:8
